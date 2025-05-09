@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>Turbo Peças - Peças para essa sua Bomba</title>
+<style>
+  /* Reset */
+  * {
+    box-sizing: border-box;
+    margin: 0; padding: 0;
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color:#121212;
+    color: #e0e0e0;
+    min-height: 600px;
+    max-width: 350px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+  }
+  header {
+    background: #1f1f1f;
+    padding: 12px 15px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.9);
+  }
+  header h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+    color: #ffc107;
+    user-select: none;
+  }
+  header p {
+    font-size: 0.85rem;
+    font-style: italic;
+    font-weight: 500;
+    color: #ffca28;
+    user-select: none;
+  }
+
+  main {
+    flex: 1;
+    padding: 8px 10px 20px;
+    overflow-y: auto;
+  }
+
+  /* Categories */
+  .categories {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+  .category-btn {
+    background: #333333;
+    color: #ffc107;
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    border: none;
+    cursor: pointer;
+    flex-shrink: 0;
+    box-shadow: 0 2px 5px rgba(255 193 7 / 0.3);
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+  .category-btn:hover, .category-btn.active {
+    background: #ffc107;
+    color: #121212;
+  }
+
+  /* Products grid */
+  .products {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+  .product-card {
+    background: #222222cc;
+    border-radius: 12px;
+    padding: 10px;
+    box-shadow: 0 4px 8px rgb(0 0 0 / 0.7);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    user-select: none;
+  }
+  .product-card img {
+    max-width: 100%;
+    max-height: 110px;
+    object-fit: contain;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    background: #fff;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border-color 0.25s ease;
+  }
+  .product-card img:hover,
+  .product-card img:focus {
+    border-color: #ffc107;
+    outline: none;
+  }
+  .product-card h3 {
+    font-size: 1rem;
+    margin-bottom: 6px;
+    text-align: center;
+    color: #ffeb3b;
+    cursor: pointer;
+  }
+  .product-card h3:hover,
+  .product-card h3:focus {
+    text-decoration: underline;
+    outline: none;
+  }
+  .product-price {
+    font-weight: 600;
+    color: #ffb300;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+  }
+  .btn-buy {
+    background: #ffc107;
+    border: none;
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    color: #121212;
+    box-shadow: 0 3px 5px rgb(0 0 0 / 0.5);
+    transition: background 0.25s ease;
+  }
+  .btn-buy:hover {
+    background: #ffca28;
+  }
+
+  /* Cart */
+  .cart {
+    background: #1f1f1fcc;
+    padding: 10px 15px;
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 -4px 10px rgba(0,0,0,0.8);
+    max-height: 160px;
+    overflow-y: auto;
+    font-size: 0.9rem;
+    user-select: none;
+  }
+  .cart h2 {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+    color: #ffca28;
+    text-align: center;
+  }
+  .cart-items {
+    max-height: 90px;
+    overflow-y: auto;
+    margin-bottom: 8px;
+  }
+  .cart-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  .cart-item span {
+    flex-shrink: 0;
+  }
+  .cart-total {
+    font-weight: 700;
+    text-align: right;
+    color: #ffca28;
+  }
+  .btn-purchase {
+    width: 100%;
+    background: #ff6f00;
+    border: none;
+    padding: 8px 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+    border-radius: 20px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgb(0 0 0 / 0.6);
+    transition: background 0.3s ease;
+  }
+  .btn-purchase:hover {
+    background: #ffa000;
+  }
+  .message {
+    text-align: center;
+    font-weight: 700;
+    margin-top: 6px;
+    color: #81c784;
+  }
+
+  /* Scrollbar styling for Webkit */
+  main::-webkit-scrollbar,
+  .cart-inner::-webkit-scrollbar,
+  .cart-items::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  main::-webkit-scrollbar-thumb,
+  .cart-inner::-webkit-scrollbar-thumb,
+  .cart-items::-webkit-scrollbar-thumb {
+    background-color: #ffc107bb;
+    border-radius: 10px;
+  }
+
+  /* Responsive tweaks */
+  @media (max-width: 350px) {
+    body {
+      max-width: 100vw;
+    }
+    .products {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    .product-card img {
+      max-height: 120px;
+    }
+  }
+
+  /* Modal styles */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(18,18,18,0.85);
+    backdrop-filter: blur(4px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1100;
+    padding: 12px;
+  }
+  .modal-overlay.active {
+    display: flex;
+  }
+  .modal-content {
+    background: #232323;
+    color: #f0f0f0;
+    border-radius: 12px;
+    max-width: 320px;
+    width: 100%;
+    padding: 16px 20px 20px;
+    position: relative;
+    box-shadow: 0 4px 15px rgba(255,193,7,0.6);
+  }
+  .modal-close {
+    position: absolute;
+    top: 8px;
+    right: 14px;
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+    color: #ffc107;
+    cursor: pointer;
+    font-weight: 700;
+    line-height:1;
+  }
+  .modal-close:hover,
+  .modal-close:focus {
+    color: #ffca28;
+    outline: none;
+  }
+  .modal-content img {
+    max-width: 100%;
+    max-height: 180px;
+    border-radius: 8px;
+    background: #fff;
+    display: block;
+    margin: 0 auto 15px;
+    object-fit: contain;
+  }
+  .modal-content h3 {
+    color: #ffca28;
+    margin-bottom: 8px;
+    font-size: 1.3rem;
+    text-align: center;
+  }
+  .modal-content p {
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin-bottom: 10px;
+  }
+  .modal-content .price {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #ffb300;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+  .modal-content .category {
+    font-size: 0.85rem;
+    color: #bbb;
+    font-style: italic;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Turbo Peças</h1>
+  <p>Peças para essa sua Bomba</p>
+</header>
+
+<main>
+  <section class="categories" aria-label="Categorias de peças">
+    <button class="category-btn active" data-category="all" aria-pressed="true">Todas</button>
+    <button class="category-btn" data-category="motor" aria-pressed="false">Motor</button>
+    <button class="category-btn" data-category="freio" aria-pressed="false">Freios</button>
+    <button class="category-btn" data-category="suspensao" aria-pressed="false">Suspensão</button>
+    <button class="category-btn" data-category="eletrica" aria-pressed="false">Elétrica</button>
+    <button class="category-btn" data-category="filtros" aria-pressed="false">Filtros</button>
+  </section>
+
+  <section class="products" aria-label="Produtos disponíveis">
+
+    <article class="product-card" data-category="motor" tabindex="0" data-id="1">
+      <img src="https://images.tcdn.com.br/img/img_prod/945233/vela_ignicao_gm_33329_1_5dd8551b4cfcb919033f51a179731f22.png" alt="Velas de ignição - vela" tabindex="0" />
+      <h3 tabindex="0">Velas de ignição</h3>
+      <div class="product-price">R$ 49,90</div>
+      <button class="btn-buy" aria-label="Adicionar Velas de ignição ao carrinho" data-id="1">Comprar</button>
+    </article>
+
+    <article class="product-card" data-category="motor" tabindex="0" data-id="2">
+      <img src="https://images.tcdn.com.br/img/img_prod/692567/bomba_de_oleo_at2070_1005925_1_78f07aa8faf92593184ad79fad1c24fc.jpg" alt="Bomba de óleo" tabindex="0" />
+      <h3 tabindex="0">Bomba de óleo</h3>
+      <div class="product-price">R$ 220,00</div>
+      <button class="btn-buy" aria-label="Adicionar Bomba de óleo ao carrinho" data-id="2">Comprar</button>
+    </article>
+
+    <article class="product-card" data-category="freio" tabindex="0" data-id="3">
+      <img src="https://images.tcdn.com.br/img/img_prod/1107048/180_n_1242_jogo_pastilhas_de_freio_dianteira_cerato_1_6_16v_91_1_a4e1aca485d19c9f096c5f1c64312764.jpg" alt="Pastilhas de freio" tabindex="0" />
+      <h3 tabindex="0">Pastilhas de freio</h3>
+      <div class="product-price">R$ 115,50</div>
+      <button class="btn-buy" aria-label="Adicionar Pastilhas de freio ao carrinho" data-id="3">Comprar</button>
+    </article>
+
+    <article class="product-card" data-category="freio" tabindex="0" data-id="4">
+      <img src="https://dcdn-us.mitiendanube.com/stores/003/345/909/products/montagem-disco1-ca0e2844ddcacf359f16878789495428-1024-1024.png" alt="Disco de freio" tabindex="0" />
+      <h3 tabindex="0">Disco de freio</h3>
+      <div class="product-price">R$ 180,75</div>
+      <button class="btn-buy" aria-label="Adicionar Disco de freio ao carrinho" data-id="4">Comprar</button>
+    </article>
+
+    <article class="product-card" data-category="suspensao" tabindex="0" data-id="5">
+      <img src="https://offlimits.com.br/wp-content/uploads/2021/05/AMORTECEDOR-L200-OFFSHOX-FX5-199-TRAS.jpg.webp" alt="Amortecedor" tabindex="0" />
+      <h3 tabindex="0">Amortecedor</h3>
+      <div class="product-price">R$ 340,00</div>
+      <button class="btn-buy" aria-label="Adicionar Amortecedor ao carrinho" data-id="5">Comprar</button>
+    </article>
+
+    <article class="product-card" data-category="suspensao" tabindex="0" data-id="6">
+      <img src="https://raromolas.com.br/wp-content/uploads/2023/05/molas-helicoidais-damol.jpg" alt="Mola helicoidal" tabindex="0" />
+      <h3 tabindex="0">Mola helicoidal</h3>
+      <div class="product-price">R$ 125,00</div>
+      <button class="btn-buy" aria-label="Adicionar Mola helicoidal ao carrinho" data-id="6">Comprar</button>
+    </article>
+
+    <article class="product-card" data-category="eletrica" tabindex="0" data-id="7">
+      <img src="https://cdn.awsli.com.br/600x450/1249/1249655/produto/62858542/d9248bc975.jpg" alt="Bateria Moura" tabindex="0" />
+      <h3 tabindex="0">Bateria automotiva</h3>
+      <div class="product-price">R$ 680,00</div>
+      <button class="btn-buy" aria-label="Adicionar Bateria automotiva ao carrinho" data-id="7">Comprar</button>
+    </article>
+
+    <article class="product-card" data-category="eletrica" tabindex="0" data-id="8">
+      <img src="https://pecahoje.vteximg.com.br/arquivos/ids/174846-1000-1000/alternador-0098-chery-face-v5-c1.jpg?v=637934215050100000" alt="Alternador" tabindex="0" />
+      <h3 tabindex="0">Alternador</h3>
+      <div class="product-price">R$ 530,00</div>
+      <button class="btn-buy" aria-label="Adicionar Alternador ao carrinho" data-id="8">Comprar</button>
+    </article>
+
+    <article class="product-card" data-category="filtros" tabindex="0" data-id="9">
+      <img src="https://http2.mlstatic.com/D_NQ_NP_979885-MLB52237861770_112022-O.webp" alt="Filtro de ar esportivo" tabindex="0" />
+      <h3 tabindex="0">Filtro de ar</h3>
+      <div class="product-price">R$ 60,00</div>
+      <button class="btn-buy" aria-label="Adicionar Filtro de ar ao carrinho" data-id="9">Comprar</button>
+    </article>
+
+    <article class="product-card" data-category="filtros" tabindex="0" data-id="10">
+      <img src="file:///C:/Users/T-GAMER/Downloads/filtro-de-oleo-lubrificante-1011061-1614824682708%20(2).jpg" alt="Filtro de óleo" tabindex="0" />
+      <h3 tabindex="0">Filtro de óleo</h3>
+      <div class="product-price">R$ 45,00</div>
+      <button class="btn-buy" aria-label="Adicionar Filtro de óleo ao carrinho" data-id="10">Comprar</button>
+    </article>
+
+  </section>
+</main>
+
+<section class="cart" aria-label="Carrinho de compras">
+  <h2>Carrinho</h2>
+  <div class="cart-items" role="list"></div>
+  <div class="cart-total" aria-live="polite"></div>
+  <button class="btn-purchase" disabled>Comprar</button>
+  <div class="message" aria-live="polite"></div>
+</section>
+
+<!-- Modal -->
+<div class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title" tabindex="-1">
+  <div class="modal-content">
+    <button class="modal-close" aria-label="Fechar modal">&times;</button>
+    <img src="" alt="" id="modal-img" />
+    <h3 id="modal-title"></h3>
+    <div class="price" id="modal-price"></div>
+    <div class="category" id="modal-category"></div>
+    <p id="modal-description"></p>
+  </div>
+</div>
+
+<script>
+  // Products data object including descriptions
+  const products = [
+    {id: "1", name: "Velas de ignição", price: 49.90, category:"motor", img:"https://images.tcdn.com.br/img/img_prod/945233/vela_ignicao_gm_33329_1_5dd8551b4cfcb919033f51a179731f22.png", alt:"Velas de ignição - vela",
+    description: "Velas de ignição eficientes para garantir a ignição perfeita do motor e desempenho superior."},
+    {id: "2", name: "Bomba de óleo", price: 220.00, category:"motor", img:"https://images.tcdn.com.br/img/img_prod/692567/bomba_de_oleo_at2070_1005925_1_78f07aa8faf92593184ad79fad1c24fc.jpg", alt:"Bomba de óleo",
+    description: "Bomba de óleo resistente que assegura lubrificação adequada para prolongar a vida útil do motor."},
+    {id: "3", name: "Pastilhas de freio", price: 115.50, category:"freio", img:"https://images.tcdn.com.br/img/img_prod/1107048/180_n_1242_jogo_pastilhas_de_freio_dianteira_cerato_1_6_16v_91_1_a4e1aca485d19c9f096c5f1c64312764.jpg", alt:"Pastilhas de freio",
+    description: "Pastilhas de freio com alta durabilidade e excelente desempenho para máxima segurança."},
+    {id: "4", name: "Disco de freio", price: 180.75, category:"freio", img:"https://dcdn-us.mitiendanube.com/stores/003/345/909/products/montagem-disco1-ca0e2844ddcacf359f16878789495428-1024-1024.png", alt:"Disco de freio",
+    description: "Disco de freio de qualidade superior que oferece estabilidade e eficiência na frenagem."},
+    {id: "5", name: "Amortecedor", price: 340.00, category:"suspensao", img:"https://offlimits.com.br/wp-content/uploads/2021/05/AMORTECEDOR-L200-OFFSHOX-FX5-199-TRAS.jpg.webp", alt:"Amortecedor",
+    description: "Amortecedor capaz de absorver impactos, garantindo uma direção mais confortável e segura."},
+    {id: "6", name: "Mola helicoidal", price: 125.00, category:"suspensao", img:"https://raromolas.com.br/wp-content/uploads/2023/05/molas-helicoidais-damol.jpg", alt:"Mola helicoidal",
+    description: "Mola helicoidal resistente para manter a estabilidade do veículo em diferentes condições de estrada."},
+    {id: "7", name: "Bateria automotiva", price: 680.00, category:"eletrica", img:"https://cdn.awsli.com.br/600x450/1249/1249655/produto/62858542/d9248bc975.jpg", alt:"Bateria Moura",
+    description: "Bateria de alta capacidade que garante partida rápida e duradoura para seu veículo."},
+    {id: "8", name: "Alternador", price: 530.00, category:"eletrica", img:"https://pecahoje.vteximg.com.br/arquivos/ids/174846-1000-1000/alternador-0098-chery-face-v5-c1.jpg?v=637934215050100000", alt:"Alternador",
+    description: "Alternador eficiente para manter a carga da bateria e alimentar sistemas elétricos do veículo."},
+    {id: "9", name: "Filtro de ar", price: 60.00, category:"filtros", img:"https://http2.mlstatic.com/D_NQ_NP_979885-MLB52237861770_112022-O.webp", alt:"Filtro de ar esportivo",
+    description: "Filtro de ar que protege o motor de partículas nocivas, melhorando desempenho e economia."},
+    {id: "10", name: "Filtro de óleo", price: 45.00, category:"filtros", img:"file:///C:/Users/T-GAMER/Downloads/filtro-de-oleo-lubrificante-1011061-1614824682708%20(2).jpg", alt:"Filtro de óleo",
+    description: "Filtro de óleo com alta eficiência para manter o motor limpo e funcionando corretamente."}
+  ];
+
+  const categoryButtons = document.querySelectorAll('.category-btn');
+  const productCards = document.querySelectorAll('.product-card');
+  const cartItemsContainer = document.querySelector('.cart-items');
+  const cartTotal = document.querySelector('.cart-total');
+  const purchaseButton = document.querySelector('.btn-purchase');
+  const messageBox = document.querySelector('.message');
+
+  const modalOverlay = document.querySelector('.modal-overlay');
+  const modalImg = document.getElementById('modal-img');
+  const modalTitle = document.getElementById('modal-title');
+  const modalPrice = document.getElementById('modal-price');
+  const modalCategory = document.getElementById('modal-category');
+  const modalDescription = document.getElementById('modal-description');
+  const modalCloseBtn = document.querySelector('.modal-close');
+
+  let currentCategory = 'all';
+  let cart = {};
+
+  // Filter products visually by category
+  function filterProducts(category) {
+    productCards.forEach(card => {
+      if(category === 'all') {
+        card.style.display = 'flex';
+      } else {
+        card.style.display = card.getAttribute('data-category') === category ? 'flex' : 'none';
+      }
+    });
+  }
+
+  // Update cart UI
+  function updateCartUI() {
+    cartItemsContainer.innerHTML = '';
+    const ids = Object.keys(cart);
+    if (ids.length === 0) {
+      cartItemsContainer.innerHTML = '<p style="opacity:0.7; text-align:center; font-style:italic;">Carrinho vazio</p>';
+      cartTotal.textContent = '';
+      purchaseButton.disabled = true;
+      return;
+    }
+    let total = 0;
+    ids.forEach(id => {
+      const product = products.find(p => p.id === id);
+      const quantity = cart[id];
+      total += product.price * quantity;
+      const itemDiv = document.createElement('div');
+      itemDiv.className = 'cart-item';
+      itemDiv.innerHTML = `<span>${product.name} x${quantity}</span><span>R$ ${(product.price * quantity).toFixed(2)}</span>`;
+      cartItemsContainer.appendChild(itemDiv);
+    });
+    cartTotal.textContent = `Total: R$ ${total.toFixed(2)}`;
+    purchaseButton.disabled = false;
+  }
+
+  // Add product to cart
+  function addToCart(productId) {
+    if (cart[productId]) {
+      cart[productId]++;
+    } else {
+      cart[productId] = 1;
+    }
+    updateCartUI();
+    const product = products.find(p => p.id === productId);
+    showMessage(`Adicionado ao carrinho: ${product.name}`);
+  }
+
+  // Show temporary messages
+  function showMessage(msg) {
+    messageBox.textContent = msg;
+    setTimeout(() => {
+      messageBox.textContent = '';
+    }, 2500);
+  }
+
+  // Purchase: clear cart after confirmation
+  function purchase() {
+    if(Object.keys(cart).length === 0) return;
+    cart = {};
+    updateCartUI();
+    showMessage('Compra realizada com sucesso! Obrigado pela preferência.');
+  }
+
+  // Set category handlers
+  categoryButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      categoryButtons.forEach(btn => {
+        btn.classList.remove('active');
+        btn.setAttribute('aria-pressed', 'false');
+      });
+      button.classList.add('active');
+      button.setAttribute('aria-pressed', 'true');
+      currentCategory = button.getAttribute('data-category');
+      filterProducts(currentCategory);
+    });
+  });
+
+  // Delegate add to cart buttons
+  document.querySelector('.products').addEventListener('click', e => {
+    // Add to cart button clicked
+    if(e.target.classList.contains('btn-buy')) {
+      const id = e.target.getAttribute('data-id');
+      addToCart(id);
+      return;
+    }
+    // Open modal if product img or title clicked
+    if(e.target.tagName === 'IMG' && e.target.closest('.product-card')) {
+      const card = e.target.closest('.product-card');
+      openModal(card.getAttribute('data-id'));
+    }
+    if(e.target.tagName === 'H3' && e.target.closest('.product-card')) {
+      const card = e.target.closest('.product-card');
+      openModal(card.getAttribute('data-id'));
+    }
+  });
+
+  // Keyboard accessible modal triggers for images and titles
+  productCards.forEach(card => {
+    const img = card.querySelector('img');
+    const title = card.querySelector('h3');
+    [img, title].forEach(el => {
+      el.addEventListener('keydown', e => {
+        if(e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openModal(card.getAttribute('data-id'));
+        }
+      });
+    });
+  });
+
+  // Open modal with product info
+  function openModal(id) {
+    const product = products.find(p => p.id === id);
+    if(!product) return;
+    modalImg.src = product.img;
+    modalImg.alt = product.alt || product.name;
+    modalTitle.textContent = product.name;
+    modalPrice.textContent = `R$ ${product.price.toFixed(2)}`;
+    modalCategory.textContent = `Categoria: ${capitalize(product.category)}`;
+    modalDescription.textContent = product.description || '';
+    modalOverlay.classList.add('active');
+    modalCloseBtn.focus();
+  }
+
+  // Close modal
+  function closeModal() {
+    modalOverlay.classList.remove('active');
+    // Return focus to the last focused product (optional)
+  }
+
+  modalCloseBtn.addEventListener('click', closeModal);
+  modalOverlay.addEventListener('click', e => {
+    if(e.target === modalOverlay) {
+      closeModal();
+    }
+  });
+  document.addEventListener('keydown', e => {
+    if(e.key === 'Escape' && modalOverlay.classList.contains('active')) {
+      closeModal();
+    }
+  });
+
+  // Capitalize first letter function
+  function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
+  purchaseButton.addEventListener('click', purchase);
+  // Initial setup
+  filterProducts('all');
+  updateCartUI();
+
+</script>
+</body>
+</html>
+</content>
+</create_file>
